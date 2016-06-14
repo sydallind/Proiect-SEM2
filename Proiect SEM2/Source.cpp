@@ -15,7 +15,34 @@
 
 #pragma comment(lib, "ComCtl32.lib")
 
-TCHAR text1[255],text2[255];
+TCHAR text1[1024],text2[1024];
+
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+
+int m, n;
+
+void ASCII(char *s, TCHAR v[1024])
+{
+	int i = 0, nr = 0;
+	char c;
+	for (i = 0; i < strlen(s); i++)
+	{
+		c = *(s + i);
+		while (c != NULL)
+		{
+			v[nr++] = c % 2 + 48;
+			c /= 2;
+		}
+		v[nr++] = 48;
+	}
+	int nr1 = nr;
+	nr += 3;
+	for (nr1; nr1 < nr; nr1++)
+		v[nr1] = 48;
+}
 
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -30,9 +57,14 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	case IDC_BUTTON1:
 	{
-		GetDlgItemText(hDlg, IDC_EDIT1, text1, 255);
-		GetDlgItemText(hDlg, IDC_EDIT5, text2, 255);
-
+		
+	}
+	case IDC_BUTTON2:
+	{
+		TCHAR v1[1024];
+		GetDlgItemText(hDlg, IDC_EDIT1, text1, 1024);
+		ASCII(text1, v1);
+		break;
 	}
 		break;
 
