@@ -1,4 +1,4 @@
-
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <Windows.h>
 #include <CommCtrl.h>
@@ -42,6 +42,41 @@ void ASCII(char *s, TCHAR v[1024])
 	nr += 3;
 	for (nr1; nr1 < nr; nr1++)
 		v[nr1] = 48;
+}
+
+char *scadere(char s[1028], char CRCbin[5])
+{
+	char rez[1028], aux[5], kon = 0;
+	strcpy(rez, s);
+	for (int i = 0; i < strlen(rez) - 4; i++)
+	{
+		kon = 0;
+		while (rez[i] != 49 && i < strlen(rez) - 4)
+			i++;
+		if (strncmp(rez + i, CRCbin, 4) == 0)
+		{
+			for (int j = i; j <= i + 3; j++)
+				rez[j] = 48;
+			i += 3;
+			kon = 0;
+		}
+		else for (int j = 0; j < 4; j++)
+		{
+			if (rez[i + j] == CRCbin[j]) rez[i + j] = 48;
+			else rez[i + j] = 49;
+		}
+	}
+	int i = strlen(rez) - 4;
+	if (rez[i] == 49)
+		for (int j = 0; j < 4; j++)
+		{
+			if (rez[i + j] == CRCbin[j]) rez[i + j] = 48;
+			else rez[i + j] = 49;
+		}
+	int j = strlen(rez);
+	for (i = 0; i < j - 3; i++)
+		strcpy(rez, rez + 1);
+	return rez;
 }
 
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
