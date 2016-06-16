@@ -15,7 +15,7 @@
 
 #pragma comment(lib, "ComCtl32.lib")
 
-TCHAR text1[1024],text2[1024];
+TCHAR text1[1024];
 
 #include<stdio.h>
 #include<string.h>
@@ -23,6 +23,7 @@ TCHAR text1[1024],text2[1024];
 
 
 int m, n;
+char rez[1028],rez2[1028],aux1[1028];
 
 void ASCII(char *s, TCHAR v[1024])
 {
@@ -46,8 +47,13 @@ void ASCII(char *s, TCHAR v[1024])
 
 char *scadere(char s[1028], char CRCbin[5])
 {
-	char rez[1028], aux[5], kon = 0;
+	char aux[5], kon = 0;
 	strcpy(rez, s);
+	int k = 0;
+	while (rez[k] > 0)
+		k++;
+	rez[k] = '\0';
+	s[k] = '\0';
 	for (int i = 0; i < strlen(rez) - 4; i++)
 	{
 		kon = 0;
@@ -89,20 +95,29 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDCANCEL:
 			SendMessage(hDlg, WM_CLOSE, 0, 0);
 			return TRUE;
+		case IDC_BUTTON1:
+		{
+			TCHAR v2[1028];
+			char rez2[1024];
+			GetDlgItemText(hDlg, IDC_EDIT5, v2, 1028);
+			strcpy(rez2, scadere(v2, "1011"));
+			if (strcmp(aux1, rez2) == 0) SetDlgItemText(hDlg, IDC_EDIT6, "Nu exista erori la transmitere");
+			else SetDlgItemText(hDlg, IDC_EDIT6, "Exista erori la transmitere");
+			break;
 		}
-	case IDC_BUTTON1:
-	{
-		
-	}
-	case IDC_BUTTON2:
-	{
-		TCHAR v1[1024];
-		GetDlgItemText(hDlg, IDC_EDIT1, text1, 1024);
-		ASCII(text1, v1);
+		case IDC_BUTTON2:
+		{
+			TCHAR v1[1028];
+			char rez[1024];
+			GetDlgItemText(hDlg, IDC_EDIT1, text1, 1024);
+			ASCII(text1, v1);
+			strcpy(aux1,scadere(v1, "1011"));
+			SetDlgItemText(hDlg, IDC_EDIT2, v1);
+			SetDlgItemText(hDlg, IDC_EDIT5, v1);
+			break;
+		}
+		}
 		break;
-	}
-		break;
-
 	case WM_CLOSE:
 		if (MessageBox(hDlg, TEXT("Close the program?"), TEXT("Close"),
 			MB_ICONQUESTION | MB_YESNO) == IDYES)
@@ -115,7 +130,6 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return TRUE;
 	}
-
 	return FALSE;
 }
 
